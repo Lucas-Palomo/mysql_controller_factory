@@ -1,5 +1,9 @@
 {
-  "name": "generic_controler",
+  "name": "generic_controller",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lucas-Palomo/generic_APIController"
+  },
   "version": "1.0.0",
   "description": "",
   "main": "./generic_controller/index.js",
