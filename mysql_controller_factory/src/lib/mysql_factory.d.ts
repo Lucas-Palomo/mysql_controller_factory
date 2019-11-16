@@ -7,8 +7,8 @@ export declare class MysqlFactory {
     customConnConfig(config: ConnectionConfig): void;
     connection(multipleStatements?: boolean): Connection;
     pool(multipleStatements?: boolean, connectionLimit?: number): Pool;
-    get poolConfig(): PoolConfig;
-    set poolConfig(value: PoolConfig);
-    get connConfig(): ConnectionConfig;
-    set connConfig(value: ConnectionConfig);
+    private get poolConfig();
+    private set poolConfig(value);
+    private get connConfig();
+    private set connConfig(value);
 }

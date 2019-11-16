@@ -4,43 +4,43 @@ import {Connection, PoolConnection, Query} from "mysql";
 
 export class ControllerFactory {
 	
-	model: Object;
-	keys: Array<string>;
+	conn: Connection | PoolConnection;
+	primary_identifier: string | undefined;
 	
-	constructor(model: Object, keys: Array<string>) {
-		this.model = model;
-		this.keys = keys;
+	constructor(conn: Connection | PoolConnection, primary_identifier?: string) {
+		this.conn = conn;
+		this.primary_identifier = primary_identifier;
 	}
 	
-	get(conn: Connection | PoolConnection, query: string, model: Object, verbose: boolean = false) {
+	get(query: string, model: Object, verbose: boolean = false) {
 		return ((req: e.Request, res: e.Response) => {
-			if (model === req.body) {
-				conn.connect((err) => {
-					if (err) {
-						res.status(500).send({
-							status: 500,
-							message: "Bad Connection",
-							error: {
-								name: err.name,
-								code: err.code,
-								message: err.message,
-								fatal: err.fatal,
-								errno: err.errno,
-								fieldCount: err.fieldCount,
-								stack: err.stack,
-								detailed_sql: {
-									sql: err.sql,
-									sql_message: err.sqlMessage,
-									sql_state: err.sqlState,
-									sql_state_marker: err.sqlStateMarker,
-								}
-							},
-							err: err
-						})
-					} else {
-						conn.query(
+			this.conn.connect((err) => {
+				if (err) {
+					res.status(500).send({
+						status: 500,
+						message: "Bad Connection",
+						error: {
+							name: err.name,
+							code: err.code,
+							message: err.message,
+							fatal: err.fatal,
+							errno: err.errno,
+							fieldCount: err.fieldCount,
+							stack: err.stack,
+							detailed_sql: {
+								sql: err.sql,
+								sql_message: err.sqlMessage,
+								sql_state: err.sqlState,
+								sql_state_marker: err.sqlStateMarker,
+							}
+						},
+						err: err
+					})
+				} else {
+					if (typeof this.primary_identifier === "string") {
+						this.conn.query(
 							query,
-							req.body,
+							req.params[this.primary_identifier],
 							((err, results) => {
 								if (err) {
 									res.status(400).send({
@@ -62,15 +62,16 @@ export class ControllerFactory {
 							})
 						)
 					}
-				});
-			} else {
-				res.status(406).send({
-					status: 406,
-					message: "Not Acceptable",
-					received: req.body,
-					expected: model
-				})
-			}
+				}
+			});
+			// } else {
+			// 	res.status(406).send({
+			// 		status: 406,
+			// 		message: "Not Acceptable",
+			// 		received: req.body,
+			// 		expected: model
+			// 	})
+			// }
 		});
 	}
 }

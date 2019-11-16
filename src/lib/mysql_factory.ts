@@ -50,19 +50,19 @@ export class MysqlFactory {
 		return mysql.createPool(this.poolConfig);
 	}
 	
-	get poolConfig(): PoolConfig {
+	private get poolConfig(): PoolConfig {
 		return <PoolConfig>this._poolConfig;
 	}
 	
-	set poolConfig(value: PoolConfig) {
+	private set poolConfig(value: PoolConfig) {
 		this._poolConfig = value;
 	}
 	
-	get connConfig(): ConnectionConfig {
+	private get connConfig(): ConnectionConfig {
 		return <ConnectionConfig>this._connConfig;
 	}
 	
-	set connConfig(value: ConnectionConfig) {
+	private set connConfig(value: ConnectionConfig) {
 		this._connConfig = value;
 	}
 }
