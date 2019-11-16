@@ -6,7 +6,7 @@ export class MysqlFactory {
 	private _poolConfig: PoolConfig | undefined;
 	private _connConfig: ConnectionConfig | undefined;
 	
-	createMysql(host: string, port: number, user: string, password: string, timezone: string) {
+	createMysql(host: string, port: number, user: string, password: string, database: string, timezone: string) {
 		this.connConfig.host = host;
 		this.poolConfig.host = host;
 		
@@ -18,6 +18,9 @@ export class MysqlFactory {
 		
 		this.connConfig.password = password;
 		this.poolConfig.password = password;
+		
+		this.connConfig.database = database;
+		this.poolConfig.database = database;
 		
 		this.connConfig.timezone = timezone;
 		this.poolConfig.timezone = timezone;

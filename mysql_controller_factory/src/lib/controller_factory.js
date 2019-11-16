@@ -1,69 +1,28 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const status_factory_1 = require("./status_factory");
 class ControllerFactory {
-    constructor(conn, primary_identifier) {
+    constructor(conn) {
         this.conn = conn;
-        this.primary_identifier = primary_identifier;
     }
-    get(query, model, verbose = false) {
+    list(query, verbose = false) {
         return ((req, res) => {
+            const statusFactory = new status_factory_1.StatusFactory(req, res, verbose);
             this.conn.connect((err) => {
                 if (err) {
-                    res.status(500).send({
-                        status: 500,
-                        message: "Bad Connection",
-                        error: {
-                            name: err.name,
-                            code: err.code,
-                            message: err.message,
-                            fatal: err.fatal,
-                            errno: err.errno,
-                            fieldCount: err.fieldCount,
-                            stack: err.stack,
-                            detailed_sql: {
-                                sql: err.sql,
-                                sql_message: err.sqlMessage,
-                                sql_state: err.sqlState,
-                                sql_state_marker: err.sqlStateMarker,
-                            }
-                        },
-                        err: err
-                    });
+                    statusFactory.status500(err);
                 }
                 else {
-                    if (typeof this.primary_identifier === "string") {
-                        this.conn.query(query, req.params[this.primary_identifier], ((err, results) => {
-                            if (err) {
-                                res.status(400).send({
-                                    status: 400,
-                                    message: "Bad Request",
-                                    error: err
-                                });
-                            }
-                            else {
-                                if (verbose) {
-                                    res.status(200).send({
-                                        status: 200,
-                                        result: results,
-                                        affectedRows: results.affectedRows
-                                    });
-                                }
-                                else {
-                                    res.status(200).send(results);
-                                }
-                            }
-                        }));
-                    }
+                    this.conn.query(query, ((err, results) => {
+                        if (err) {
+                            statusFactory.status400(err);
+                        }
+                        else {
+                            statusFactory.status200(results);
+                        }
+                    }));
                 }
             });
-            // } else {
-            // 	res.status(406).send({
-            // 		status: 406,
-            // 		message: "Not Acceptable",
-            // 		received: req.body,
-            // 		expected: model
-            // 	})
-            // }
         });
     }
 }

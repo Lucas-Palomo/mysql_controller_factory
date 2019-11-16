@@ -1,12 +1,11 @@
 import e = require("express");
-import {Request} from "express";
 
 export class StatusFactory {
 	verbose: boolean;
-	req: e.Request;
-	res: e.Response;
+	private req: e.Request;
+	private res: e.Response;
 	
-	constructor(req: e.Request, res: e.Response, verbose: boolean) {
+	constructor(req: e.Request, res: e.Response, verbose: boolean = false) {
 		this.verbose = verbose;
 		this.req = req;
 		this.res = res;

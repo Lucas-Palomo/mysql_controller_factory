@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mysql = require("mysql");
 class MysqlFactory {
-    createMysql(host, port, user, password, timezone) {
+    createMysql(host, port, user, password, database, timezone) {
         this.connConfig.host = host;
         this.poolConfig.host = host;
         this.connConfig.port = port;
@@ -11,6 +11,8 @@ class MysqlFactory {
         this.poolConfig.user = user;
         this.connConfig.password = password;
         this.poolConfig.password = password;
+        this.connConfig.database = database;
+        this.poolConfig.database = database;
         this.connConfig.timezone = timezone;
         this.poolConfig.timezone = timezone;
     }
