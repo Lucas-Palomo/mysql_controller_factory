@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/generic_controler.iml" filepath="$PROJECT_DIR$/generic_controler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/generic_controller_factory.iml" filepath="$PROJECT_DIR$/generic_controller_factory.iml" />
     </modules>
   </component>
 </project>
