@@ -12,7 +12,7 @@ class ControllerFactory {
             if (expectedFrom !== undefined) {
                 let controlOptions;
                 controlOptions = new controller_options_1.ControllerOptions(req, res);
-                if (controlOptions.valuesIsValid(expectedFrom)) {
+                if (!controlOptions.valuesIsValid(expectedFrom)) {
                     statusFactory.status406(expectedFrom);
                 }
                 else {

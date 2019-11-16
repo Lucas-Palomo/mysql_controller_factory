@@ -26,7 +26,7 @@ export class ControllerFactory {
 			if (expectedFrom !== undefined) {
 				let controlOptions: ControllerOptions;
 				controlOptions = new ControllerOptions(req, res);
-				if (controlOptions.valuesIsValid(expectedFrom)) {
+				if (!controlOptions.valuesIsValid(expectedFrom)) {
 					statusFactory.status406(expectedFrom);
 				} else {
 					this.conn.connect((err) => {
