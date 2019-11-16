@@ -11,6 +11,21 @@ export class StatusFactory {
 		this.res = res;
 	}
 	
+	statusDeleted(results?: any | undefined) {
+		if (this.verbose && results !== undefined) {
+			this.res.status(200).send({
+				status: 200,
+				message: "Deleted with success",
+				affectedRows: results?.affectedRows
+			});
+		} else {
+			this.res.status(200).send({
+				status: 200,
+				message: "Deleted with success"
+			})
+		}
+	}
+	
 	status200(results: any) {
 		if (this.verbose) {
 			this.res.status(200).send({
@@ -22,6 +37,35 @@ export class StatusFactory {
 		} else {
 			this.res.status(200).send(results)
 		}
+	}
+	
+	status201(results: any) {
+		if (this.verbose) {
+			this.res.status(200).send({
+				status: 200,
+				message: "Created with success",
+				affectedRows: results.affectedRows
+			})
+		} else {
+			this.res.status(200).send({
+				status: 200,
+				message: "Created with success",
+			});
+		}
+	}
+	
+	status204() {
+		this.res.status(204).send({
+			status: 204,
+			message: "No Content"
+		})
+	}
+	
+	status404() {
+		this.res.status(404).send({
+			status: 404,
+			message: "Not Found"
+		})
 	}
 	
 	status400(err: any) {
