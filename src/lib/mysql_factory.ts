@@ -6,6 +6,12 @@ export class MysqlFactory {
 	private _poolConfig: PoolConfig | undefined;
 	private _connConfig: ConnectionConfig | undefined;
 	
+	
+	constructor(poolConfig?: PoolConfig, connConfig?: ConnectionConfig) {
+		this._poolConfig = poolConfig;
+		this._connConfig = connConfig;
+	}
+	
 	createMysql(host: string, port: number, user: string, password: string, database: string, timezone: string) {
 		this.connConfig.host = host;
 		this.poolConfig.host = host;

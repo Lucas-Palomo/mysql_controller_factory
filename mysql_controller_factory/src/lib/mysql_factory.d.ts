@@ -2,6 +2,7 @@ import { Connection, ConnectionConfig, Pool, PoolConfig } from "mysql";
 export declare class MysqlFactory {
     private _poolConfig;
     private _connConfig;
+    constructor(poolConfig?: PoolConfig, connConfig?: ConnectionConfig);
     createMysql(host: string, port: number, user: string, password: string, database: string, timezone: string): void;
     customPoolConfig(config: PoolConfig): void;
     customConnConfig(config: ConnectionConfig): void;
