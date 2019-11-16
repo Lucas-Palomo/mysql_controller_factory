@@ -1,9 +1,9 @@
 import e = require("express");
-import { Connection, PoolConnection } from "mysql";
+import { Pool } from "mysql";
 export declare class ControllerFactory {
-    private conn;
-    constructor(conn: Connection | PoolConnection);
-    list(query: string, expectedFrom: {
+    private pool;
+    constructor(pool: Pool);
+    list(query: string, expectedFrom?: {
         params: {
             order: number;
             property: string;

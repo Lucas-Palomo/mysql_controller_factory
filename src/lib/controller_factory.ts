@@ -1,19 +1,19 @@
 import e = require("express");
-import {Connection, PoolConnection} from "mysql";
+import {Pool} from "mysql";
 import {StatusFactory} from "./status_factory";
 import {ControllerOptions} from "./controller_options";
 
 export class ControllerFactory {
 	
-	private conn: Connection | PoolConnection;
+	private pool: Pool;
 	
-	constructor(conn: Connection | PoolConnection) {
-		this.conn = conn;
+	constructor(pool: Pool) {
+		this.pool = pool;
 	}
 	
 	list(
 		query: string,
-		expectedFrom:
+		expectedFrom ?:
 			{
 				params: { order: number, property: string }[],
 				body: { order: number, property: string }[],
@@ -23,20 +23,24 @@ export class ControllerFactory {
 		verbose: boolean = false) {
 		return ((req: e.Request, res: e.Response) => {
 			const statusFactory = new StatusFactory(req, res, verbose);
-			if (expectedFrom !== undefined) {
-				let controlOptions: ControllerOptions;
-				controlOptions = new ControllerOptions(req, res);
-				if (!controlOptions.valuesIsValid(expectedFrom)) {
-					statusFactory.status406(expectedFrom);
+			
+			this.pool.getConnection((err, connection) => {
+				if (err) {
+					connection.release();
+					statusFactory.status500(err)
 				} else {
-					this.conn.connect((err) => {
-						if (err) {
-							statusFactory.status500(err)
+					if (expectedFrom !== undefined) {
+						let controlOptions: ControllerOptions;
+						controlOptions = new ControllerOptions(req, res);
+						if (!controlOptions.valuesIsValid(expectedFrom)) {
+							connection.release();
+							statusFactory.status406(expectedFrom);
 						} else {
-							this.conn.query(
+							connection.query(
 								query,
 								controlOptions.formattedValues(expectedFrom),
 								((err, results) => {
+									connection.release();
 									if (err) {
 										statusFactory.status400(err)
 									} else {
@@ -45,20 +49,23 @@ export class ControllerFactory {
 								})
 							);
 						}
-					});
+					} else {
+						connection.query(
+							query,
+							((err, results) => {
+								connection.release();
+								if (err) {
+									statusFactory.status400(err)
+								} else {
+									statusFactory.status200(results)
+								}
+							})
+						);
+					}
 				}
-			} else {
-				this.conn.query(
-					query,
-					((err, results) => {
-						if (err) {
-							statusFactory.status400(err)
-						} else {
-							statusFactory.status200(results)
-						}
-					})
-				);
-			}
+			});
 		});
 	}
+	
+	
 }
