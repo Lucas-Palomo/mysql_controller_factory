@@ -16,7 +16,7 @@ export class StatusFactory {
 			this.res.status(200).send({
 				status: 200,
 				message: "Success",
-				result: results,
+				response: results,
 				affectedRows: results.affectedRows
 			})
 		} else {
@@ -32,7 +32,7 @@ export class StatusFactory {
 		})
 	}
 	
-	status406(model: Object) {
+	status406(model: Map<string, Array<string>> | undefined) {
 		this.res.status(406).send({
 			status: 406,
 			message: "Not Acceptable",

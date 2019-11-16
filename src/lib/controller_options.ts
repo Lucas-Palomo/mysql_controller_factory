@@ -1,103 +1,74 @@
+import e = require("express");
+
 export class ControllerOptions {
 	
+	req: e.Request;
+	res: e.Response;
 	
-	private _id: string | undefined;
-	private _verbose: boolean | undefined;
-	private _usesOptions: usesOptions | undefined;
-	private _expectedOptions: expectedOptions | undefined;
-	
-	
-	get id(): string | undefined {
-		return this._id;
+	constructor(expectedOrder: Map<string, Array<string>>, req: e.Request, res: e.Response) {
+		this.req = req;
+		this.res = res;
 	}
 	
-	set id(value: string | undefined) {
-		this._id = value;
+	valuesIsValid(expectedOrder: Map<string, Array<string>> | undefined): boolean {
+		
+		let params: boolean = false;
+		let body: boolean = false;
+		let query: boolean = false;
+		let locals: boolean = false;
+		
+		expectedOrder?.forEach((value, key) => {
+			if (key.startsWith("params")) {
+				if (Object.keys(this.req.params) === value) {
+					params = true;
+				}
+			}
+			if (key.startsWith("body")) {
+				if (Object.keys(this.req.body) === value) {
+					body = true;
+				}
+			}
+			if (key.startsWith("query")) {
+				if (Object.keys(this.req.query) === value) {
+					query = true;
+				}
+			}
+			if (key.startsWith("locals")) {
+				if (Object.keys(this.res.locals) === value) {
+					locals = true;
+				}
+			}
+		});
+		return locals && body && params && query;
 	}
 	
-	get verbose(): boolean | undefined {
-		return this._verbose;
+	formattedValues(expectedOrder: Map<string, Array<string>> | undefined): any[] {
+		
+		let formattedValues: any[] = [];
+		
+		expectedOrder?.forEach((value, key) => {
+			if (key.startsWith("params")) {
+				for (let i = 0; i <= value.length; i++) {
+					formattedValues[i] = this.req.params[value[i]];
+				}
+			}
+			if (key.startsWith("body")) {
+				for (let i = 0; i <= value.length; i++) {
+					formattedValues[i] = this.req.body[value[i]];
+				}
+			}
+			if (key.startsWith("query")) {
+				for (let i = 0; i <= value.length; i++) {
+					formattedValues[i] = this.req.query[value[i]];
+				}
+			}
+			if (key.startsWith("locals")) {
+				for (let i = 0; i <= value.length; i++) {
+					formattedValues[i] = this.res.locals[value[i]];
+				}
+			}
+		});
+		return formattedValues;
 	}
 	
-	set verbose(value: boolean | undefined) {
-		this._verbose = value;
-	}
-	
-	get usesOptions(): usesOptions | undefined {
-		return this._usesOptions;
-	}
-	
-	set usesOptions(value: usesOptions | undefined) {
-		this._usesOptions = value;
-	}
-	
-	get expectedOptions(): expectedOptions | undefined {
-		return this._expectedOptions;
-	}
-	
-	set expectedOptions(value: expectedOptions | undefined) {
-		this._expectedOptions = value;
-	}
-}
-
-class expectedOptions {
-	
-	private _expected_params: object | undefined;
-	private _expected_body: object | undefined;
-	private _expected_query: object | undefined;
-	
-	get expected_params(): object | undefined {
-		return this._expected_params;
-	}
-	
-	set expected_params(value: object | undefined) {
-		this._expected_params = value;
-	}
-	
-	get expected_body(): object | undefined {
-		return this._expected_body;
-	}
-	
-	set expected_body(value: object | undefined) {
-		this._expected_body = value;
-	}
-	
-	get expected_query(): object | undefined {
-		return this._expected_query;
-	}
-	
-	set expected_query(value: object | undefined) {
-		this._expected_query = value;
-	}
-}
-
-class usesOptions {
-	
-	private _body: boolean | undefined;
-	private _params: boolean | undefined;
-	private _query: boolean | undefined;
-	
-	get body(): boolean | undefined {
-		return this._body;
-	}
-	
-	set body(value: boolean | undefined) {
-		this._body = value;
-	}
-	
-	get params(): boolean | undefined {
-		return this._params;
-	}
-	
-	set params(value: boolean | undefined) {
-		this._params = value;
-	}
-	
-	get query(): boolean | undefined {
-		return this._query;
-	}
-	
-	set query(value: boolean | undefined) {
-		this._query = value;
-	}
 }
