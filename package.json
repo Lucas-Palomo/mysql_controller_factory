@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/Lucas-Palomo/generic_APIController"
   },
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "",
   "main": "./mysql_controller_factory/index.js",
   "keywords": [],

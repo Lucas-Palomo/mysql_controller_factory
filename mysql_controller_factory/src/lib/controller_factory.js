@@ -36,6 +36,16 @@ class ControllerFactory {
                     });
                 }
             }
+            else {
+                this.conn.query(query, ((err, results) => {
+                    if (err) {
+                        statusFactory.status400(err);
+                    }
+                    else {
+                        statusFactory.status200(results);
+                    }
+                }));
+            }
         });
     }
 }
