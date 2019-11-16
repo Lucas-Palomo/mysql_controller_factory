@@ -5,7 +5,7 @@ export class ControllerOptions {
 	req: e.Request;
 	res: e.Response;
 	
-	constructor(expectedOrder: Map<string, Array<string>>, req: e.Request, res: e.Response) {
+	constructor(req: e.Request, res: e.Response) {
 		this.req = req;
 		this.res = res;
 	}

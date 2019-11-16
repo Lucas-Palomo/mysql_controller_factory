@@ -11,16 +11,23 @@ export class ControllerFactory {
 		this.conn = conn;
 	}
 	
-	list(query: string, expectedValues?: Map<string, Array<string>> | undefined, verbose: boolean = false) {
+	list(
+		query: string,
+		expectedFrom:
+			{
+				params: Map<number, string>,
+				body: Map<number, string>,
+				query: Map<number, string>,
+				locals: Map<number, string>
+			} | undefined,
+		verbose: boolean = false) {
 		return ((req: e.Request, res: e.Response) => {
 			const statusFactory = new StatusFactory(req, res, verbose);
-			let controlOptions: ControllerOptions | undefined;
-			if (expectedValues !== undefined && expectedValues.size > 0) {
-				controlOptions = new ControllerOptions(expectedValues, req, res);
-			}
-			if (controlOptions !== undefined) {
-				if (controlOptions.valuesIsValid(expectedValues)) {
-					statusFactory.status406(expectedValues);
+			if (expectedFrom !== undefined) {
+				let controlOptions: ControllerOptions;
+				controlOptions = new ControllerOptions(req, res);
+				if (controlOptions.valuesIsValid(expectedFrom)) {
+					statusFactory.status406(expectedFrom);
 				} else {
 					this.conn.connect((err) => {
 						if (err) {
@@ -28,7 +35,7 @@ export class ControllerFactory {
 						} else {
 							this.conn.query(
 								query,
-								controlOptions?.formattedValues(expectedValues),
+								controlOptions.formattedValues(expectedFrom),
 								((err, results) => {
 									if (err) {
 										statusFactory.status400(err)

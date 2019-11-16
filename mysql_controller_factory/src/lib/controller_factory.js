@@ -6,25 +6,22 @@ class ControllerFactory {
     constructor(conn) {
         this.conn = conn;
     }
-    list(query, expectedValues, verbose = false) {
+    list(query, expectedFrom, verbose = false) {
         return ((req, res) => {
             const statusFactory = new status_factory_1.StatusFactory(req, res, verbose);
-            let controlOptions;
-            if (expectedValues !== undefined && expectedValues.size > 0) {
-                controlOptions = new controller_options_1.ControllerOptions(expectedValues, req, res);
-            }
-            if (controlOptions !== undefined) {
-                if (controlOptions.valuesIsValid(expectedValues)) {
-                    statusFactory.status406(expectedValues);
+            if (expectedFrom !== undefined) {
+                let controlOptions;
+                controlOptions = new controller_options_1.ControllerOptions(req, res);
+                if (controlOptions.valuesIsValid(expectedFrom)) {
+                    statusFactory.status406(expectedFrom);
                 }
                 else {
                     this.conn.connect((err) => {
-                        var _a;
                         if (err) {
                             statusFactory.status500(err);
                         }
                         else {
-                            this.conn.query(query, (_a = controlOptions) === null || _a === void 0 ? void 0 : _a.formattedValues(expectedValues), ((err, results) => {
+                            this.conn.query(query, controlOptions.formattedValues(expectedFrom), ((err, results) => {
                                 if (err) {
                                     statusFactory.status400(err);
                                 }

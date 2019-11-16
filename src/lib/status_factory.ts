@@ -32,7 +32,7 @@ export class StatusFactory {
 		})
 	}
 	
-	status406(model: Map<string, Array<string>> | undefined) {
+	status406(model: { params: Map<number, string>; body: Map<number, string>; query: Map<number, string>; locals: Map<number, string> }) {
 		this.res.status(406).send({
 			status: 406,
 			message: "Not Acceptable",
