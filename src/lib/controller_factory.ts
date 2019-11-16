@@ -15,10 +15,10 @@ export class ControllerFactory {
 		query: string,
 		expectedFrom:
 			{
-				params: Map<number, string>,
-				body: Map<number, string>,
-				query: Map<number, string>,
-				locals: Map<number, string>
+				params: { order: number, property: string }[],
+				body: { order: number, property: string }[],
+				query: { order: number, property: string }[],
+				locals: { order: number, property: string }[]
 			} | undefined,
 		verbose: boolean = false) {
 		return ((req: e.Request, res: e.Response) => {

@@ -32,12 +32,17 @@ export class StatusFactory {
 		})
 	}
 	
-	status406(model: { params: Map<number, string>; body: Map<number, string>; query: Map<number, string>; locals: Map<number, string> }) {
+	status406(model: { params: { order: number; property: string }[]; body: { order: number; property: string }[]; query: { order: number; property: string }[]; locals: { order: number; property: string }[] }) {
 		this.res.status(406).send({
 			status: 406,
 			message: "Not Acceptable",
-			received: this.req.body,
-			expected: model
+			expected: model,
+			received: [
+				{body: this.req.body},
+				{params: this.req.params},
+				{query: this.req.query},
+				{locals: this.res.locals}
+			],
 		})
 	}
 	

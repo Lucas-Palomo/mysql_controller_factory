@@ -10,13 +10,26 @@ export class ControllerOptions {
 		this.res = res;
 	}
 	
+	arraysIsEquals(expected: { order: number, property: string }[], received: string[]) {
+		if (expected.length === received.length) {
+			for (let i = 0; i < expected.length; i++) {
+				if (received[i] !== expected[i].property) {
+					return false
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	valuesIsValid(
 		from:
 			{
-				params: Map<number, string>,
-				body: Map<number, string>,
-				query: Map<number, string>,
-				locals: Map<number, string>
+				params: { order: number, property: string }[],
+				body: { order: number, property: string }[],
+				query: { order: number, property: string }[],
+				locals: { order: number, property: string }[]
 			}): boolean {
 		
 		let params: boolean = false;
@@ -24,16 +37,17 @@ export class ControllerOptions {
 		let query: boolean = false;
 		let locals: boolean = false;
 		
-		if (Array.from(from.params.values()) === Object.keys(this.req.params)) {
+		
+		if (this.arraysIsEquals(from.params, Object.keys(this.req.params))) {
 			params = true;
 		}
-		if (Array.from(from.body.values()) === Object.keys(this.req.body)) {
+		if (this.arraysIsEquals(from.body, Object.keys(this.req.body))) {
 			body = true;
 		}
-		if (Array.from(from.query.values()) === Object.keys(this.req.query)) {
+		if (this.arraysIsEquals(from.query, Object.keys(this.req.query))) {
 			query = true;
 		}
-		if (Array.from(from.locals.values()) === Object.keys(this.res.locals)) {
+		if (this.arraysIsEquals(from.locals, Object.keys(this.res.locals))) {
 			locals = true;
 		}
 		
@@ -43,25 +57,25 @@ export class ControllerOptions {
 	formattedValues(
 		from:
 			{
-				params: Map<number, string>,
-				body: Map<number, string>,
-				query: Map<number, string>,
-				locals: Map<number, string>
+				params: { order: number, property: string }[],
+				body: { order: number, property: string }[],
+				query: { order: number, property: string }[],
+				locals: { order: number, property: string }[]
 			}): any[] {
 		
 		let values: Map<number, any> = new Map<number, any>();
 		
-		from.params.forEach((value, key) => {
-			values.set(key, this.req.params[value]);
+		from.params.forEach((value) => {
+			values.set(value.order, this.req.params[value.property]);
 		});
-		from.body.forEach((value, key) => {
-			values.set(key, this.req.body[value]);
+		from.body.forEach((value) => {
+			values.set(value.order, this.req.body[value.property]);
 		});
-		from.query.forEach((value, key) => {
-			values.set(key, this.req.query[value]);
+		from.query.forEach((value) => {
+			values.set(value.order, this.req.query[value.property]);
 		});
-		from.locals.forEach((value, key) => {
-			values.set(key, this.res.locals[value]);
+		from.locals.forEach((value) => {
+			values.set(value.order, this.res.locals[value.property]);
 		});
 		
 		return Array.from(values.values());
