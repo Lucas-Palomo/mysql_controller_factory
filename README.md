@@ -19,7 +19,7 @@ Initialization of factories
     const controller = new factory.ControllerFactory(mysql.createPool(multipleStatements)); 
 
   - timezone is your UTC
-      - example in Brazil the UTC is "**utc+3**" 
+      - example in Brazil the UTC is "**utc-3**" 
    - multipleStatements in createPool 
        - if  "**true**", enables execution of multiples query
   
